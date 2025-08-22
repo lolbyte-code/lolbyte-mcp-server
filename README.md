@@ -2,6 +2,10 @@
 
 See https://modelcontextprotocol.io/docs/getting-started/intro
 
+## Demo
+
+![demo](./demo.gif)
+
 ## Build
 
 ```bash
