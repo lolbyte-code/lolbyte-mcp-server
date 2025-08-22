@@ -12,20 +12,11 @@ npm run build
 
 ### Claude Desktop
 
-Update `/path/to/claude_desktop_config.json` as follows (change paths):
+Update `/path/to/claude_desktop_config.json` as follows:
 
 ```json
 {
   "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "/path/to/Desktop",
-        "/path/to/Downloads"
-      ]
-    },
     "lolbyte-mcp": {
       "command": "sh",
       "args": [
