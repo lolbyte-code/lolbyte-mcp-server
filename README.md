@@ -51,3 +51,21 @@ services:
       source: ./librechat.yaml
       target: /app/librechat.yaml
 ```
+
+### LM Studio
+
+Update `mcp.json` as follows:
+
+```json
+{
+  "mcpServers": {
+    "lolbyte-mcp": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "RIOT_API_KEY=YOUR_API_KEY node /Users/anthony/repos/lolbyte-mcp/build/index.js"
+      ]
+    }
+  }
+}
+```
