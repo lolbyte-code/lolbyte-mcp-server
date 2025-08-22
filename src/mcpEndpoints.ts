@@ -6,8 +6,7 @@ import Bottleneck from "bottleneck";
 const cache = new NodeCache({ stdTTL: 300 });
 const limiter = new Bottleneck({ minTime: 100 });
 
-// Hardcoded Riot API key and region
-const RIOT_API_KEY = "API_KEY_HERE";
+const RIOT_API_KEY = process.env.RIOT_API_KEY;
 const REGION = "na1";
 
 // --- Generic Riot API fetcher with caching ---

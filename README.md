@@ -27,8 +27,11 @@ Update `/path/to/claude_desktop_config.json` as follows (change paths):
       ]
     },
     "lolbyte-mcp": {
-      "command": "node",
-      "args": ["/path/to/lolbyte-mcp-server/build/index.js"]
+      "command": "sh",
+      "args": [
+        "-c",
+        "RIOT_API_KEY=YOUR_API_KEY node /Users/anthony/repos/lolbyte-mcp/build/index.js"
+      ]
     }
   }
 }
@@ -41,9 +44,10 @@ Update `librechat.yaml`:
 ```yaml
 mcpServers:
   lolbyte:
-    command: node
+    command: sh
     args:
-      - "/app/mcp/build/index.js"
+      - -c
+      - "RIOT_API_KEY=YOUR_API_KEY node /app/mcp/build/index.js"
 ```
 Update `docker-compose.override.yml`:
 
