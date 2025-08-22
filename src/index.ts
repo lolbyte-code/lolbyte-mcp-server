@@ -1,10 +1,10 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { 
+import {
   CallToolRequestSchema,
   ErrorCode,
   ListToolsRequestSchema,
-  McpError 
+  McpError,
 } from "@modelcontextprotocol/sdk/types.js";
 import * as mcpEndpoints from "./mcpEndpoints.js";
 
@@ -15,11 +15,11 @@ const server = new Server(
     version: "1.0.0",
   },
   {
-    capabilities: { 
+    capabilities: {
       resources: {},
-      tools: {}
-    }
-  }
+      tools: {},
+    },
+  },
 );
 
 // --- Handle tool listing ---
@@ -34,35 +34,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             name: {
               type: "string",
-              description: "Summoner name in the format GameName#Tagline"
+              description: "Summoner name in the format GameName#Tagline",
             },
             matchLimit: {
               type: "number",
               description: "Number of recent matches to fetch (default 5)",
-              default: 5
-            }
+              default: 5,
+            },
           },
-          required: ["name"]
-        }
+          required: ["name"],
+        },
       },
       {
         name: "fetch_tft_summoner_context",
-        description: "Fetch TFT summoner info, league entries, and recent matches",
+        description:
+          "Fetch TFT summoner info, league entries, and recent matches",
         inputSchema: {
           type: "object",
           properties: {
             name: {
               type: "string",
-              description: "Summoner name in the format GameName#Tagline"
+              description: "Summoner name in the format GameName#Tagline",
             },
             matchLimit: {
               type: "number",
               description: "Number of recent matches to fetch (default 5)",
-              default: 5
-            }
+              default: 5,
+            },
           },
-          required: ["name"]
-        }
+          required: ["name"],
+        },
       },
       {
         name: "get_summoner",
@@ -72,11 +73,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             name: {
               type: "string",
-              description: "Summoner name"
-            }
+              description: "Summoner name",
+            },
           },
-          required: ["name"]
-        }
+          required: ["name"],
+        },
       },
       {
         name: "get_league_entries",
@@ -86,11 +87,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             puuid: {
               type: "string",
-              description: "Player UUID"
-            }
+              description: "Player UUID",
+            },
           },
-          required: ["puuid"]
-        }
+          required: ["puuid"],
+        },
       },
       {
         name: "get_tft_league_entries",
@@ -100,11 +101,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             puuid: {
               type: "string",
-              description: "Player UUID"
-            }
+              description: "Player UUID",
+            },
           },
-          required: ["puuid"]
-        }
+          required: ["puuid"],
+        },
       },
       {
         name: "get_recent_matches",
@@ -114,16 +115,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             puuid: {
               type: "string",
-              description: "Player UUID"
+              description: "Player UUID",
             },
             limit: {
               type: "number",
               description: "Number of matches to fetch (default 5)",
-              default: 5
-            }
+              default: 5,
+            },
           },
-          required: ["puuid"]
-        }
+          required: ["puuid"],
+        },
       },
       {
         name: "get_tft_recent_matches",
@@ -133,16 +134,16 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             puuid: {
               type: "string",
-              description: "Player UUID"
+              description: "Player UUID",
             },
             limit: {
               type: "number",
               description: "Number of TFT matches to fetch (default 5)",
-              default: 5
-            }
+              default: 5,
+            },
           },
-          required: ["puuid"]
-        }
+          required: ["puuid"],
+        },
       },
       {
         name: "get_match_details",
@@ -152,11 +153,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             matchId: {
               type: "string",
-              description: "Match ID"
-            }
+              description: "Match ID",
+            },
           },
-          required: ["matchId"]
-        }
+          required: ["matchId"],
+        },
       },
       {
         name: "get_tft_match_details",
@@ -166,13 +167,13 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             matchId: {
               type: "string",
-              description: "Match ID"
-            }
+              description: "Match ID",
+            },
           },
-          required: ["matchId"]
-        }
-      }
-    ]
+          required: ["matchId"],
+        },
+      },
+    ],
   };
 });
 
@@ -183,60 +184,66 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
     switch (name) {
       case "fetch_summoner_context": {
-        const { name: summonerName, matchLimit = 5 } = args as { 
-          name: string; 
-          matchLimit?: number; 
+        const { name: summonerName, matchLimit = 5 } = args as {
+          name: string;
+          matchLimit?: number;
         };
-        
-        if (!summonerName || typeof summonerName !== 'string') {
+
+        if (!summonerName || typeof summonerName !== "string") {
           throw new McpError(
             ErrorCode.InvalidParams,
-            "Summoner name is required and must be a string"
+            "Summoner name is required and must be a string",
           );
         }
 
-        const result = await mcpEndpoints.getFullContext(summonerName, matchLimit);
+        const result = await mcpEndpoints.getFullContext(
+          summonerName,
+          matchLimit,
+        );
         return {
           content: [
             {
               type: "text",
-              text: JSON.stringify(result, null, 2)
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       }
 
       case "fetch_tft_summoner_context": {
-        const { name: summonerName, matchLimit = 5 } = args as { 
-          name: string; 
-          matchLimit?: number; 
+        const { name: summonerName, matchLimit = 5 } = args as {
+          name: string;
+          matchLimit?: number;
         };
-        
-        if (!summonerName || typeof summonerName !== 'string') {
+
+        if (!summonerName || typeof summonerName !== "string") {
           throw new McpError(
             ErrorCode.InvalidParams,
-            "Summoner name is required and must be a string"
+            "Summoner name is required and must be a string",
           );
         }
 
-        const result = await mcpEndpoints.getTftFullContext(summonerName, matchLimit);
+        const result = await mcpEndpoints.getTftFullContext(
+          summonerName,
+          matchLimit,
+        );
         return {
           content: [
             {
               type: "text",
-              text: JSON.stringify(result, null, 2)
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       }
 
       case "get_summoner": {
         const { name: summonerName } = args as { name: string };
-        
-        if (!summonerName || typeof summonerName !== 'string') {
+
+        if (!summonerName || typeof summonerName !== "string") {
           throw new McpError(
             ErrorCode.InvalidParams,
-            "Summoner name is required and must be a string"
+            "Summoner name is required and must be a string",
           );
         }
 
@@ -245,19 +252,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [
             {
               type: "text",
-              text: JSON.stringify(summoner, null, 2)
-            }
-          ]
+              text: JSON.stringify(summoner, null, 2),
+            },
+          ],
         };
       }
 
       case "get_league_entries": {
         const { puuid } = args as { puuid: string };
-        
-        if (!puuid || typeof puuid !== 'string') {
+
+        if (!puuid || typeof puuid !== "string") {
           throw new McpError(
             ErrorCode.InvalidParams,
-            "PUUID is required and must be a string"
+            "PUUID is required and must be a string",
           );
         }
 
@@ -266,19 +273,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [
             {
               type: "text",
-              text: JSON.stringify(entries, null, 2)
-            }
-          ]
+              text: JSON.stringify(entries, null, 2),
+            },
+          ],
         };
       }
 
       case "get_tft_league_entries": {
         const { puuid } = args as { puuid: string };
-        
-        if (!puuid || typeof puuid !== 'string') {
+
+        if (!puuid || typeof puuid !== "string") {
           throw new McpError(
             ErrorCode.InvalidParams,
-            "PUUID is required and must be a string"
+            "PUUID is required and must be a string",
           );
         }
 
@@ -287,22 +294,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [
             {
               type: "text",
-              text: JSON.stringify(entries, null, 2)
-            }
-          ]
+              text: JSON.stringify(entries, null, 2),
+            },
+          ],
         };
       }
 
       case "get_recent_matches": {
-        const { puuid, limit = 5 } = args as { 
-          puuid: string; 
-          limit?: number; 
+        const { puuid, limit = 5 } = args as {
+          puuid: string;
+          limit?: number;
         };
-        
-        if (!puuid || typeof puuid !== 'string') {
+
+        if (!puuid || typeof puuid !== "string") {
           throw new McpError(
             ErrorCode.InvalidParams,
-            "PUUID is required and must be a string"
+            "PUUID is required and must be a string",
           );
         }
 
@@ -311,22 +318,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [
             {
               type: "text",
-              text: JSON.stringify(matches, null, 2)
-            }
-          ]
+              text: JSON.stringify(matches, null, 2),
+            },
+          ],
         };
       }
 
       case "get_tft_recent_matches": {
-        const { puuid, limit = 5 } = args as { 
-          puuid: string; 
-          limit?: number; 
+        const { puuid, limit = 5 } = args as {
+          puuid: string;
+          limit?: number;
         };
-        
-        if (!puuid || typeof puuid !== 'string') {
+
+        if (!puuid || typeof puuid !== "string") {
           throw new McpError(
             ErrorCode.InvalidParams,
-            "PUUID is required and must be a string"
+            "PUUID is required and must be a string",
           );
         }
 
@@ -335,19 +342,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [
             {
               type: "text",
-              text: JSON.stringify(matches, null, 2)
-            }
-          ]
+              text: JSON.stringify(matches, null, 2),
+            },
+          ],
         };
       }
 
       case "get_match_details": {
         const { matchId } = args as { matchId: string };
-        
-        if (!matchId || typeof matchId !== 'string') {
+
+        if (!matchId || typeof matchId !== "string") {
           throw new McpError(
             ErrorCode.InvalidParams,
-            "Match ID is required and must be a string"
+            "Match ID is required and must be a string",
           );
         }
 
@@ -356,19 +363,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [
             {
               type: "text",
-              text: JSON.stringify(match, null, 2)
-            }
-          ]
+              text: JSON.stringify(match, null, 2),
+            },
+          ],
         };
       }
 
       case "get_tft_match_details": {
         const { matchId } = args as { matchId: string };
-        
-        if (!matchId || typeof matchId !== 'string') {
+
+        if (!matchId || typeof matchId !== "string") {
           throw new McpError(
             ErrorCode.InvalidParams,
-            "Match ID is required and must be a string"
+            "Match ID is required and must be a string",
           );
         }
 
@@ -377,29 +384,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [
             {
               type: "text",
-              text: JSON.stringify(match, null, 2)
-            }
-          ]
+              text: JSON.stringify(match, null, 2),
+            },
+          ],
         };
       }
 
       default:
-        throw new McpError(
-          ErrorCode.MethodNotFound,
-          `Unknown tool: ${name}`
-        );
+        throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
     }
   } catch (error) {
     // Re-throw McpErrors as-is
     if (error instanceof McpError) {
       throw error;
     }
-    
+
     // Handle other errors
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new McpError(
       ErrorCode.InternalError,
-      `Error executing tool ${name}: ${errorMessage}`
+      `Error executing tool ${name}: ${errorMessage}`,
     );
   }
 });

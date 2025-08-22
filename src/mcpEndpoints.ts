@@ -15,7 +15,7 @@ async function fetchRiot<T>(url: string): Promise<T> {
   if (cached) return cached;
 
   const res = await limiter.schedule(() =>
-    axios.get<T>(url, { headers: { "X-Riot-Token": RIOT_API_KEY } })
+    axios.get<T>(url, { headers: { "X-Riot-Token": RIOT_API_KEY } }),
   );
 
   cache.set(url, res.data);
@@ -28,7 +28,7 @@ export async function getSummoner(name: string): Promise<any> {
   if (!gameName || !tagLine) throw new Error("Use format GameName#TagLine");
 
   const url = `https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(
-    gameName
+    gameName,
   )}/${encodeURIComponent(tagLine)}`;
 
   return fetchRiot(url);
@@ -44,12 +44,18 @@ export async function getTftLeagueEntries(puuid: string): Promise<any> {
   return fetchRiot(url);
 }
 
-export async function getRecentMatches(puuid: string, limit = 5): Promise<string[]> {
+export async function getRecentMatches(
+  puuid: string,
+  limit = 5,
+): Promise<string[]> {
   const url = `https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=${limit}`;
   return fetchRiot(url);
 }
 
-export async function getTftRecentMatches(puuid: string, limit = 5): Promise<any> {
+export async function getTftRecentMatches(
+  puuid: string,
+  limit = 5,
+): Promise<any> {
   const url = `https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/${puuid}/ids?start=0&count=${limit}`;
   return fetchRiot(url);
 }
@@ -73,7 +79,7 @@ export async function getFullContext(name: string, matchLimit = 5) {
   const recentMatchIds = await getRecentMatches(puuid, matchLimit);
 
   const recentMatches = await Promise.all(
-    recentMatchIds.map((id) => getMatchDetails(id))
+    recentMatchIds.map((id) => getMatchDetails(id)),
   );
 
   return { summoner, leagueEntries, recentMatches };
@@ -87,7 +93,7 @@ export async function getTftFullContext(name: string, matchLimit = 5) {
   const recentMatchIds = await getTftRecentMatches(puuid, matchLimit);
 
   const recentMatches = await Promise.all(
-    recentMatchIds.map((id: string) => getTftMatchDetails(id))
+    recentMatchIds.map((id: string) => getTftMatchDetails(id)),
   );
 
   return { summoner, leagueEntries, recentMatches };
